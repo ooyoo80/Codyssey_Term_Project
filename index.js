@@ -9,6 +9,11 @@ const PRODUCTS_MAP = {
 
 const cameraArea = document.getElementById('camera');
 const resultText = document.getElementById('result');
+const statusMessage = document.getElementById('status');
+
+const alcoholBarcodes = [
+    "Alcohol"
+];
 
 function startScanner() {
 
@@ -36,12 +41,18 @@ function startScanner() {
     );
 }
 
+let isAlcohol = false;
+
 Quagga.onDetected((data) => {
     const code = data.codeResult.code;
+
+    isAlcohol = alcoholBarcodes.includes(code);
 
     console.log("Barcode detected and processed : [" + code + "]", data);
 
     resultText.innerText = `Detected Code: ${code}`;
+    statusMessage.innerText = `status: ${isAlcohol}`;
+    
 });
 
 startScanner();
