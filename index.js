@@ -4,8 +4,14 @@ const PRODUCTS_MAP = {
     "8801007686561": { name: "새우깡", price: 1500, is_alcohol: false }
 };
 
+const alcoholBarcodes = [
+    "Alcohol"
+];
+
 const resultText = document.getElementById('result-text');
 const cameraArea = document.getElementById('camera');
+const statusMessage = document.getElementById('status');
+
 
 /**
  * [핵심 로직] 바코드 처리 함수
@@ -65,12 +71,20 @@ function startScanner() {
     );
 }
 
+let isAlcohol = false;
+
 Quagga.onDetected((data) => {
     const code = data.codeResult.code;
 
+    isAlcohol = alcoholBarcodes.includes(code);
+
     console.log("Barcode detected and processed : [" + code + "]", data);
 
+
     handleScannedCode(code);
+
+    resultText.innerText = `Detected Code: ${code}`;
+    statusMessage.innerText = `status: ${isAlcohol}`;
 });
 
 startScanner();
