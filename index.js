@@ -1,3 +1,12 @@
+/* Mock product data (temporary) */
+const PRODUCTS_MAP = {
+    "8801043036068": { name: "참이슬 후레쉬", price: 1950, is_alcohol: true },
+    "8801007686561": { name: "새우깡", price: 1500, is_alcohol: false }
+};
+
+// 개발용: 콘솔에서 확인하려면 아래처럼 접근하세요
+// console.log(PRODUCTS_MAP["8801043036068"]);
+
 const cameraArea = document.getElementById('camera');
 const resultText = document.getElementById('result');
 
