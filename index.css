@@ -1,1 +1,48 @@
-/* index.css 파일 생성!! */
+/* Flex split layout styles */
+html, body {
+	height: 100%;
+	margin: 0;
+	font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+/* Split container: two panes side-by-side */
+.split {
+	display: flex;
+	height: calc(100vh - 56px); /* 헤더(h1)를 제외한 영역 높이 조정 */
+}
+
+.pane {
+	flex: 1 1 0;
+	box-sizing: border-box;
+	padding: 20px;
+	overflow: auto;
+}
+
+.left {
+	background: #f3f4f6;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.right {
+	background: #ffffff;
+}
+
+/* 비디오 스타일: 반응형으로 패널에 맞게 */
+#video {
+	max-width: 100%;
+	max-height: 100%;
+	width: 100%;
+	height: auto;
+	background: #000;
+}
+
+/* 작은 화면에서는 위아래 스택으로 변경 */
+@media (max-width: 600px) {
+	.split {
+		flex-direction: column;
+		height: auto;
+	}
+	.left, .right { padding: 16px; }
+}
