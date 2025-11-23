@@ -6,3 +6,10 @@
 
 ## Tech Stack
 * **Language**: Python 3.13.7
+
+# 실행
+```
+pip install -r requirements.txt 
+
+./run.sh
+```
