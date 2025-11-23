@@ -38,6 +38,17 @@ html, body {
 	background: #000;
 }
 
+#result-text {
+	color: blue;
+	font-weight: bold;
+}
+
+#status {
+	font-size: 0.8rem;
+	color: gray;
+	margin-top: 5px;
+}
+
 /* 작은 화면에서는 위아래 스택으로 변경 */
 @media (max-width: 600px) {
 	.split {
