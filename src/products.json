@@ -1,0 +1,22 @@
+{
+    "8801043036068": { 
+        "name": "참이슬 후레쉬", 
+        "price": 1950, 
+        "is_alcohol": true 
+    },
+    "8801007686561": {
+        "name": "새우깡", 
+        "price": 1500, 
+        "is_alcohol": false 
+    },
+    "8801007686561": {
+    "name": "새우깡",
+    "price": 1500,
+    "is_alcohol": false
+    },
+    "8801062630528": {
+    "name": "코카콜라",
+    "price": 2000,
+    "is_alcohol": false
+    }
+}
