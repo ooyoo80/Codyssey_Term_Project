@@ -1,0 +1,20 @@
+erDiagram
+    %% 1. 상품 정보 (Source: product.json)
+    %% Key-Value 구조이므로 Barcode가 Root Key 역할을 함
+    PRODUCTS {
+        string barcode PK "Root Key (바코드 번호)"
+        string name "상품명"
+        int price "가격"
+        boolean is_alcohol "주류 여부 (True/False)"
+    }
+
+    %% 2. 책임 동의 로그 (Source: logs.json)
+    %% JSON Array 구조이므로 별도의 PK(log_id) 없이 쌓이는 구조
+    LOGS {
+        string barcode FK "동의 대상 상품 바코드"
+        string timestamp "동의 시각 (ISO 8601 String)"
+        boolean consent "법적 책임 동의 여부 (Always True)"
+    }
+
+    %% 관계선: 상품(1)은 여러 개의 로그(N)를 가질 수 있음
+    PRODUCTS ||--o{ LOGS : "referenced_by"
