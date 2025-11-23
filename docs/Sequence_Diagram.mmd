@@ -1,0 +1,35 @@
+sequenceDiagram
+    actor User as 사용자 (User)
+    participant Front as 키오스크 화면 (FE)
+    participant Server as API 서버 (BE)
+    participant DB as 데이터베이스 (DB)
+
+    Note over User, Front: [A 단계] 대기 및 스캔
+    User->>Front: 1. 상품 바코드 스캔
+    Front->>Server: GET /scan/{barcode}
+    Server->>DB: SELECT * FROM Products
+    DB-->>Server: {name: "맥주", is_alcohol: true}
+    Server-->>Front: Response (is_alcohol: true)
+
+    Note over Front, Front: [B 단계] 상품 판별 로직
+    alt 일반 상품 (False)
+        Front->>Front: 장바구니 즉시 추가
+    else 주류 상품 (True)
+        Front->>Front: 장바구니 추가 보류 (임시저장)
+        
+        Note over User, Front: [C 단계] 1차 관문 (성인 확인)
+        Front->>User: 팝업 1 "19세 이상입니까?"
+        User->>Front: 클릭 [Yes]
+        
+        Note over User, Front: [D 단계] 2차 관문 (책임 동의)
+        Front->>User: 팝업 2 "법적 책임 동의합니까?"
+        User->>Front: 클릭 [동의합니다]
+
+        Note over Front, DB: [D 단계] 로그 저장 및 완료
+        Front->>Server: POST /log (Timestamp + Consent)
+        Server->>DB: INSERT INTO Logs
+        DB-->>Server: Saved
+        Server-->>Front: 200 OK
+        Front->>User: 토스트 메시지 "인증 완료"
+        Front->>Front: 장바구니에 상품 최종 추가
+    end
