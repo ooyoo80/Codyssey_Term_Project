@@ -2,7 +2,7 @@ const alcoholBarcodes = [
     "Alcohol"
 ];
 
-const API_URL = "http://127.0.01:8000";
+const API_URL = "http://127.0.01:8001";
 
 const resultText = document.getElementById('result-text');
 const cameraArea = document.getElementById('camera');

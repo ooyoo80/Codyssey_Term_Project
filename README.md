@@ -10,6 +10,6 @@
 # 실행
 ```
 pip install -r requirements.txt 
-
-./run.sh
+./run-web.sh
+./run-server.sh
 ```
