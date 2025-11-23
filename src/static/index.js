@@ -1,3 +1,5 @@
+fetch("http://127.0.0.1:8000/product/1234")
+    
 const alcoholBarcodes = [
     "Alcohol"
 ];
@@ -19,10 +21,10 @@ function handleScannedCode(barcode) {
 
     try {
         // FastAPI 서버에 GET 요청 보내기
-        const response = await fetch(`${API_URL}/product/${barcode}`);
-
-        // 서버가 응답한 JSON 데이터 받기
-        const result = await response.json();
+        // const response = await fetch(`${API_URL}/product/${barcode}`);
+        fetch(`${API_URL}/product/${barcode}`)
+            .then(response => response.json())
+            .then(result => {console.log(result);})
 
         if (result.status === "success") {
             const product = result.data;
@@ -83,12 +85,10 @@ function startScanner() {
             console.log("Quagga initialization succeeded");
             Quagga.start();
         }
+
+        
     );
-}
-
-let isAlcohol = false;
-
-Quagga.onDetected((data) => {
+    Quagga.onDetected((data) => {
     const code = data.codeResult.code;
 
     isAlcohol = alcoholBarcodes.includes(code);
@@ -97,5 +97,10 @@ Quagga.onDetected((data) => {
 
     handleScannedCode(code);
 });
+
+}
+
+let isAlcohol = false;
+
 
 startScanner();
