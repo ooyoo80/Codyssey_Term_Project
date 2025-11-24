@@ -130,10 +130,8 @@ function updateCartUI() {
 // 주류 안내 메시지 렌더링 함수
 function renderAlcoholNotice(product, barcode) {
     try {
-        // 주류 판단: 상품 데이터에 플래그가 있거나 카테고리명에 'alcohol' 포함, 또는 전역 alcoholBarcodes 배열이 있을 경우 체크
-        const productIndicatesAlcohol = !!(product && (product.is_alcohol || product.alcohol || (product.category && typeof product.category === 'string' && product.category.toLowerCase().includes('alcohol'))));
-        const barcodeIndicatesAlcohol = Array.isArray(window.alcoholBarcodes) && window.alcoholBarcodes.includes(barcode);
-        const isAlcohol = productIndicatesAlcohol || barcodeIndicatesAlcohol;
+        // products.json에서 불러오는 불리언 isAlcohol이 true이면 주류로 판단
+        const isAlcohol = !!(product && product.isAlcohol === true);
 
         if (!isAlcohol) return;
 
@@ -220,6 +218,7 @@ function startScanner() {
     );
     
     let isScanning = false;
+    let isAlcohol = false;
 
     Quagga.onDetected((data) => {
         if (isScanning) return; // 중복 스캔 방지
@@ -229,8 +228,6 @@ function startScanner() {
         console.log("Barcode detected: ", code);
 
         isScanning = true; // 스캔 처리 시작
-      
-        renderAlcoholNotice({ isAlcohol }, code);
 
         handleScannedCode(code).finally(() => {
             setTimeout(() => {
