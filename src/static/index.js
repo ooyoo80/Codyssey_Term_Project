@@ -77,7 +77,7 @@ function updateQuantity(barcode, change) {
     if (product) {
         product.quantity += change;
         
-        if (product.quantity < = 0) {
+        if (product.quantity <= 0) {
             cartList = cartList.filter(item => item.barcode !== barcode);
         }
 
