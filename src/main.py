@@ -1,4 +1,6 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 import json
 import os
@@ -16,6 +18,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.mount("/static", StaticFiles(directory="static"), name = "static")
 
 PRODUCTS_FILE = 'products.json'
 
@@ -40,7 +44,7 @@ def get_product_from_db(barcode: str) :
 
 @app.get("/")
 def read_root():
-    return {"message": "Self-Check Kiosk Server is Running!"}
+    return FileResponse("templates/index.html")
 
 @app.get("/product/{barcode}")
 def scan_product(barcode: str):
