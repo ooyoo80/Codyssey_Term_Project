@@ -218,7 +218,6 @@ function startScanner() {
     );
     
     let isScanning = false;
-    let isAlcohol = false;
 
     Quagga.onDetected((data) => {
         if (isScanning) return; // 중복 스캔 방지
