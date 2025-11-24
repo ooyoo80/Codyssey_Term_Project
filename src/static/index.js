@@ -33,6 +33,9 @@ async function handleScannedCode(barcode) {
             // cartList.push(product);
             // renderCartList(cartList);
 
+            // 주류 안내 메시지 렌더 (새로 추가된 함수 호출)
+            renderAlcoholNotice(product, barcode);
+
             if (statusMessage) statusMessage.innerText = "상태: 대기 중";
 
         } else {
@@ -125,6 +128,62 @@ function updateCartUI() {
     cartListArea.scrollTop = cartListArea.scrollHeight;
 }
 
+// 주류 안내 메시지 렌더링 함수
+function renderAlcoholNotice(product, barcode) {
+    try {
+        // 주류 판단: 상품 데이터에 플래그가 있거나 카테고리명에 'alcohol' 포함, 또는 전역 alcoholBarcodes 배열이 있을 경우 체크
+        const productIndicatesAlcohol = !!(product && (product.is_alcohol || product.alcohol || (product.category && typeof product.category === 'string' && product.category.toLowerCase().includes('alcohol'))));
+        const barcodeIndicatesAlcohol = Array.isArray(window.alcoholBarcodes) && window.alcoholBarcodes.includes(barcode);
+        const isAlcohol = productIndicatesAlcohol || barcodeIndicatesAlcohol;
+
+        if (!isAlcohol) return;
+
+        // 중복 표시 방지
+        const existing = document.getElementById('alcohol-notice');
+        if (existing) existing.remove();
+
+        const notice = document.createElement('div');
+        notice.id = 'alcohol-notice';
+        Object.assign(notice.style, {
+            position: 'fixed',
+            left: '50%',
+            top: '50%',
+            transform: 'translate(-50%, -50%)',
+            padding: '16px 20px',
+            background: '#ffbebeff',
+            border: '1px solid #ff8c8cff',
+            borderRadius: '10px',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.18)',
+            zIndex: 9999,
+            color: '#000000',
+            maxWidth: '420px',
+            width: '90%',
+            fontSize: '15px',
+            lineHeight: '1.4',
+            textAlign: 'left'
+        });
+
+        notice.innerHTML = `
+            <div style="font-weight:700;margin-bottom:8px;color:#d80000;">주류 상품 안내</div>
+            <div>이 상품은 주류로 분류됩니다. 청소년에게 판매가 제한되며, 필요 시 신분증 확인이 필요합니다.</div>
+            <div style="text-align:right;margin-top:10px;">
+                <button id="alcohol-notice-close" style="background:#d80000;color:#fff;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;">확인</button>
+            </div>
+        `;
+
+        document.body.appendChild(notice);
+
+        const closeBtn = document.getElementById('alcohol-notice-close');
+        if (closeBtn) closeBtn.addEventListener('click', () => notice.remove());
+
+        // 자동으로 일정 시간 후 닫기 (5초)
+        setTimeout(() => {
+            if (notice.parentNode) notice.remove();
+        }, 5000);
+    } catch (e) {
+        console.error('renderAlcoholNotice error', e);
+    }
+}
 
 // 카메라 스캐너 설정 (Quagga)
 function startScanner() {
@@ -149,6 +208,11 @@ function startScanner() {
 
             console.log("Quagga initialization succeeded");
             Quagga.start();
+
+            const videoElement = cameraArea.querySelector('video');
+            if (videoElement) {
+                videoElement.style.transform = 'scaleX(-1)';
+            }
         }
 
         
@@ -162,7 +226,9 @@ function startScanner() {
 
         const code = data.codeResult.code;
 
-        isAlcohol = alcoholBarcodes.includes(code);
+        // 테스트용: 모든 스캔을 주류로 가정하여 안내 메시지 표시
+        // product에 is_alcohol:true을 전달하면 renderAlcoholNotice가 즉시 표시됨
+        renderAlcoholNotice({ is_alcohol: true }, code);
 
         console.log("Barcode detected: ", code);
 
