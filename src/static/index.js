@@ -1,7 +1,3 @@
-const alcoholBarcodes = [
-    "Alcohol"
-];
-
 const API_URL = "http://127.0.0.1:8001";
 
 const resultText = document.getElementById('result-text');
@@ -157,19 +153,28 @@ function startScanner() {
 
         
     );
+    
+    let isScanning = false;
+    let isAlcohol = false;
+
     Quagga.onDetected((data) => {
-    const code = data.codeResult.code;
+        if (isScanning) return; // 중복 스캔 방지
 
-    isAlcohol = alcoholBarcodes.includes(code);
+        const code = data.codeResult.code;
 
-    console.log("Barcode detected: ", code);
+        isAlcohol = alcoholBarcodes.includes(code);
 
-    handleScannedCode(code);
-});
+        console.log("Barcode detected: ", code);
 
+        isScanning = true; // 스캔 처리 시작
+        handleScannedCode(code).finally(() => {
+            setTimeout(() => {
+                isScanning = false;
+                if (statusMessage) statusMessage.innerText = "상태: 대기 중 (스캔 가능)";
+            }, 2000)
+        });
+    });
 }
-
-let isAlcohol = false;
 
 
 startScanner();
