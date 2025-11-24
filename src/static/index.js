@@ -149,6 +149,11 @@ function startScanner() {
 
             console.log("Quagga initialization succeeded");
             Quagga.start();
+
+            const videoElement = cameraArea.querySelector('video');
+            if (videoElement) {
+                videoElement.style.transform = 'scaleX(-1)';
+            }
         }
 
         
