@@ -1,10 +1,8 @@
-fetch("http://127.0.0.1:8000/product/1234")
-    
 const alcoholBarcodes = [
     "Alcohol"
 ];
 
-const API_URL = "http://127.0.01:8001";
+const API_URL = "http://127.0.0.1:8001";
 
 const resultText = document.getElementById('result-text');
 const cameraArea = document.getElementById('camera');
@@ -16,15 +14,16 @@ const statusMessage = document.getElementById('status');
  * - 버튼을 누르면 이 함수가 실행됩니다.
  * - 나중에 카메라가 완성되면, 카메라가 이 함수를 호출하게만 연결하면 끝입니다.
  */
-function handleScannedCode(barcode) {
+async function handleScannedCode(barcode) {
     console.log(`📡 [요청] 서버에 바코드 조회: ${barcode}`);
 
+    if (statusMessage) statusMessage.innerText = "상태: 서버 조회 중...";
+
     try {
-        // FastAPI 서버에 GET 요청 보내기
-        // const response = await fetch(`${API_URL}/product/${barcode}`);
-        fetch(`${API_URL}/product/${barcode}`)
-            .then(response => response.json())
-            .then(result => {console.log(result);})
+        const response = await fetch(`${API_URL}/product/${barcode}`);
+        const result = await response.json();
+
+        console.log("✅ [응답] 서버 데이터:", result);
 
         if (result.status === "success") {
             const product = result.data;
@@ -33,23 +32,29 @@ function handleScannedCode(barcode) {
 
             if (resultText) {
                 resultText.innerText = `인식됨: ${product.name} (${product.price}원)`;
+                resultText.style.color = "green";
             }
 
             // 2. 주류 여부에 따른 분기 처리
             if (product.is_alcohol) {
                 // 주류일 때
                 if(statusMessage) statusMessage.innerText = "상태: 주류 감지 (성인인증 필요)";
-                alert(`🍺 주류 감지! [${product.name}]\n-> 팝업을 띄웁니다.`);
+                setTimeout(() => alert(`🍺 주류 감지! [${product.name}]\n-> 팝업을 띄웁니다.`), 100);
                 // TODO: 여기서 팝업 띄우는 함수 호출
             } else {
                 // 일반 상품일 때
                 if(statusMessage) statusMessage.innerText = "상태: 일반 상품";
-                alert(`🛒 일반 상품! [${product.name}]\n-> 장바구니에 담습니다.`);
+                setTimeout(() => alert(`🛒 일반 상품! [${product.name}]\n-> 장바구니에 담습니다.`), 100);
                 // TODO: 여기서 장바구니 추가 함수 호출
             }
         } else {
             // 실패 (DB에 없는 상품)
             console.warn("❌ 서버 응답: 등록되지 않은 상품");
+            if (resultText) {
+                resultText.innerText = "등록되지 않은 상품입니다.";
+                resultText.style.color = "red";
+            }
+            if (statusMessage) statusMessage.innerText = "상태: 오류";
             // 사용자에게는 조용히 있거나, 필요하면 안내 메시지 표시
             // resultText.innerText = "등록되지 않은 상품입니다.";
         }
