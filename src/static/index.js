@@ -27,11 +27,9 @@ async function handleScannedCode(barcode) {
         if (result.status === "success") {
             const product = result.data;
 
-            console.log(`✅ [성공] 상품 인식: ${product.name}`);
+            console.log(`✅ [성공] 상품 인식: ${product.name}, 주류 여부: ${product.isAlcohol}`);
             
             addToCart(product);
-            // cartList.push(product);
-            // renderCartList(cartList);
 
             // 주류 안내 메시지 렌더 (새로 추가된 함수 호출)
             renderAlcoholNotice(product, barcode);
@@ -45,8 +43,8 @@ async function handleScannedCode(barcode) {
                 resultText.innerText = "등록되지 않은 상품입니다. (${barcode})";
                 resultText.style.color = "red";
             }
-            if (statusMessage) statusMessage.innerText = "상태: 오류";
-            // setTimeout(() => { if(resultText) resultText.innerText = "" }, 3000);
+            if (statusMessage) statusMessage.innerText = "상태: 오류 (등록되지 않은 상품)";
+            setTimeout(() => { if(resultText) resultText.innerText = "" }, 3000);
             // 사용자에게는 조용히 있거나, 필요하면 안내 메시지 표시
             // resultText.innerText = "등록되지 않은 상품입니다.";
         }
@@ -61,10 +59,10 @@ async function handleScannedCode(barcode) {
  * [데이터 관리] 장바구니 배열에 상품 추가
  */
 function addToCart(productToAdd) {
-    const existingProduct = cartList.find(item => item.barcode === productToAdd.barcode);
+    const existingItem = cartList.find(item => item.barcode === productToAdd.barcode);
 
-    if (existingProduct) {
-        existingProduct.quantity += 1;
+    if (existingItem) {
+        existingItem.quantity += 1;
     } else {
         cartList.push({ ...productToAdd, quantity: 1 });
     }
@@ -76,11 +74,11 @@ function addToCart(productToAdd) {
  * [데이터 관리] 장바구니 상품 수량 변경
  */
 function updateQuantity(barcode, change) {
-    const product = cartList.find(item => item.barcode === barcode);
-    if (product) {
-        product.quantity += change;
+    const item = cartList.find(item => item.barcode === barcode);
+    if (item) {
+        item.quantity += change;
         
-        if (product.quantity <= 0) {
+        if (item.quantity <= 0) {
             cartList = cartList.filter(item => item.barcode !== barcode);
         }
 
@@ -99,8 +97,9 @@ function updateCartUI() {
     cartList.forEach((item) => {
         const itemTotalPrice = item.price * item.quantity;
         totalPrice += itemTotalPrice;
-
+        
         // HTML 템플릿 생성
+        // TODO: 주류 상품일 경우 안내 메시지 생성
         const itemHTML = `
             <div class="item-card" data-barcode="${item.barcode}">
                 <div class="item-info">
@@ -197,7 +196,9 @@ function startScanner() {
             },
             decoder: {
                 readers: ['code_128_reader', 'ean_reader', 'ean_8_reader', 'code_39_reader', 'code_39_vin_reader', 'codabar_reader', 'upc_reader', 'upc_e_reader', 'i2of5_reader'],
-            }
+            },
+            locate: true,
+            frequency: 10
         },
 
         function (err) {
@@ -219,28 +220,26 @@ function startScanner() {
     );
     
     let isScanning = false;
-    let isAlcohol = false;
 
     Quagga.onDetected((data) => {
         if (isScanning) return; // 중복 스캔 방지
 
         const code = data.codeResult.code;
 
-        // 테스트용: 모든 스캔을 주류로 가정하여 안내 메시지 표시
-        // product에 is_alcohol:true을 전달하면 renderAlcoholNotice가 즉시 표시됨
-        renderAlcoholNotice({ is_alcohol: true }, code);
-
         console.log("Barcode detected: ", code);
 
         isScanning = true; // 스캔 처리 시작
+      
+        renderAlcoholNotice({ isAlcohol }, code);
+
         handleScannedCode(code).finally(() => {
             setTimeout(() => {
                 isScanning = false;
                 if (statusMessage) statusMessage.innerText = "상태: 대기 중 (스캔 가능)";
-            }, 2000)
+            }, 1500)
         });
     });
 }
 
-
+// 스캐너 시작
 startScanner();
