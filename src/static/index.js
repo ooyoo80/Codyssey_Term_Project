@@ -10,6 +10,19 @@ let cartList = [];
 // 중복 스캔으로 인한 중복 장바구니 추가를 방지하기 위한 타임스탬프 맵
 const recentAdds = {};
 
+// 이벤트 위임: 동적으로 생성되는 수량 증가/감소 버튼을 처리
+if (cartListArea) {
+    cartListArea.addEventListener('click', (e) => {
+        const btn = e.target.closest('button');
+        if (!btn || !cartListArea.contains(btn)) return;
+        const action = btn.dataset.action;
+        const barcode = btn.dataset.barcode;
+        if (!action || !barcode) return;
+        if (action === 'increase') updateQuantity(barcode, 1);
+        if (action === 'decrease') updateQuantity(barcode, -1);
+    });
+}
+
 /**
  * [핵심 로직] 바코드 처리 함수
  * - 버튼을 누르면 이 함수가 실행됩니다.
@@ -117,7 +130,6 @@ function updateCartUI() {
         totalPrice += itemTotalPrice;
         
         // HTML 템플릿 생성
-        // TODO: 주류 상품일 경우 안내 메시지 생성
         const itemHTML = `
             <div class="item-card" data-barcode="${item.barcode}">
                 <div class="item-info">
@@ -126,9 +138,9 @@ function updateCartUI() {
                 </div>
                 <div class="subtotal-controls">
                     <div class="quantity-controls">
-                        <button class="decrease" onclick="updateQuantity('${item.barcode}', -1)">-</button>
+                        <button class="decrease" data-action="decrease" data-barcode="${item.barcode}">-</button>
                         <span class="quantity">${item.quantity}</span>
-                        <button class="increase" onclick="updateQuantity('${item.barcode}', 1)">+</button>
+                        <button class="increase" data-action="increase" data-barcode="${item.barcode}">+</button>
                     </div>
                     <span class="subtotal">₩${itemTotalPrice.toLocaleString()}</span>
                 </div>
