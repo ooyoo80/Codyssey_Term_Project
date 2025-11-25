@@ -251,3 +251,78 @@ html, body {
 	}
 	.left, .right { padding: 16px; }
 }
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.show {
+	display: block;
+}
+
+.modal-content {
+    background-color: rgb(255, 0, 0);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    min-width: 350px;
+    overflow: hidden;
+}
+
+.modal-body {
+    padding: 30px 20px;
+    text-align: center;
+}
+
+.modal-body p {
+    margin: 0;
+    font-size: 1.2em;
+    color: #ffffff;
+    font-weight: 500;
+}
+
+.modal-footer {
+    display: flex;
+    gap: 12px;
+    padding: 20px;
+    background-color: #ff0000;
+    justify-content: center;
+}
+
+.modal-btn {
+    width: 100px;
+    height: 50px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.yes-btn {
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+}
+
+.yes-btn:hover {
+    background-color: #ffffff;
+}
+
+.no-btn {
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+}
+
+.no-btn:hover {
+    background-color: #ffffff;
+}

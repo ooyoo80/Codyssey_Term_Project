@@ -24,15 +24,72 @@
                             <span class="total-label">총액</span>
                             <span class="total-amount">₩0</span>
                         </div>
-                        <button class="pay-button">결제하기</button>
+                        <div class="action-container">
+                            <button id="btn-pay" class="pay-button">결제하기</button>
+                        </div>
                     </div>
                 </div>
 
             </div>
         </div>
 
+        <!-- Age Verification Modal -->
+        <div id="ageModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p>성인입니까?</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="modal-btn yes-btn" onclick="handleAgeYes()">예</button>
+                    <button class="modal-btn no-btn" onclick="handleAgeNo()">아니오</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legal Responsibility Modal -->
+        <div id="legalModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p>법적 책임도 지겠습니까?</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="modal-btn yes-btn" onclick="handleLegalYes()">예</button>
+                    <button class="modal-btn no-btn" onclick="handleLegalNo()">아니오</button>
+                </div>
+            </div>
+        </div>
+
         <script src = "https://cdn.jsdelivr.net/npm/@ericblade/quagga2/dist/quagga.js"></script>
         <script src="/static/index.js"></script>
+        <script>
+            function showAgeVerificationModal() {
+                document.getElementById('ageModal').style.display = 'flex';
+            }
+
+            function handleAgeYes() {
+                document.getElementById('ageModal').style.display = 'none';
+                // 법적 책임 모달 표시
+                document.getElementById('legalModal').style.display = 'flex';
+            }
+
+            function handleAgeNo() {
+                document.getElementById('ageModal').style.display = 'none';
+                // 결제하기 버튼 누르기 전 상황으로 돌아감
+                console.log('Age verification cancelled: Returning to initial state');
+            }
+
+            function handleLegalYes() {
+                document.getElementById('legalModal').style.display = 'none';
+                // 결제 진행 로직 추가
+                console.log('Legal responsibility accepted: Proceeding with payment');
+            }
+
+            function handleLegalNo() {
+                document.getElementById('legalModal').style.display = 'none';
+                // 결제하기 버튼 누르기 전 상황으로 돌아감
+                console.log('Legal responsibility rejected: Returning to initial state');
+            }
+        </script>
     </body>
 </html>
 
