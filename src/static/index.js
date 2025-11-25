@@ -5,6 +5,7 @@ const cameraArea = document.getElementById('camera');
 const statusMessage = document.getElementById('status');
 const cartListArea = document.querySelector('.item.list');
 const totalAmountElement = document.querySelector('.total-amount');
+const payButton = document.querySelector('.pay-button');
 
 let cartList = [];
 // 중복 스캔으로 인한 중복 장바구니 추가를 방지하기 위한 타임스탬프 맵
@@ -211,6 +212,45 @@ function renderAlcoholNotice(product, barcode) {
     } catch (e) {
         console.error('renderAlcoholNotice error', e);
     }
+}
+
+// 결제 버튼 클릭 핸들러 (주류 판단 로직)
+function handlePaymentClick() {
+    // 장바구니 비었는지 확인
+    if (cartList.length === 0) {
+        alert("장바구니에 담긴 상품이 없습니다.");
+        return;
+    }
+
+    // 주류 포함 여부 확인
+    const hasAlcohol = cartList.some(item => item.isAlcohol === true);
+
+    if (hasAlcohol) {
+        console.log("🚨 결제 시도: 주류 포함됨! -> 성인 인증 팝업 필요");
+
+        // TODO: 성인 인증 팝업 로직 추가 (현재는 임시 알림)
+        alert("[개발용] 주류가 포함되어 있습니다. 성인 인증 팝업이 열려야 합니다.");
+
+        // TODO: 실제 팝업 열기 구현 예정
+    } else {
+        // 주류 없음 -> 즉시 결제 완료
+        console.log("✅ 결제 시도: 주류 없음 -> 즉시 결제 완료");
+
+        const totalAmount = totalAmountElement ? totalAmountElement.innerTest : '0원';
+        alert(`총 ${totalAmount} 결제가 완료되었습니다!`);
+
+        cartList = [];
+        updateCartUI();
+        if (statusMessage) statusMessage.innerText = "상태: 결제 완료";
+    }
+}
+
+// 결제 버튼에 이벤트 리스너 연결
+if (payButton) {
+    payButton.addEventListener('click', handlePaymentClick);
+    console.log("결제 버튼 이벤트 리스너가 연결되었습니다.");
+} else {
+    console.warn("결제 버튼 요소를 찾을 수 없습니다 (.pay-button)");
 }
 
 // 카메라 스캐너 설정 (Quagga)
