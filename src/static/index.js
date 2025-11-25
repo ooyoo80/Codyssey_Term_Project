@@ -3,10 +3,12 @@ const API_URL = "http://127.0.0.1:8001";
 const resultText = document.getElementById('result-text');
 const cameraArea = document.getElementById('camera');
 const statusMessage = document.getElementById('status');
-const cartListArea = document.getElementById('.item.list');
+const cartListArea = document.querySelector('.item.list');
 const totalAmountElement = document.querySelector('.total-amount');
 
 let cartList = [];
+// 중복 스캔으로 인한 중복 장바구니 추가를 방지하기 위한 타임스탬프 맵
+const recentAdds = {};
 
 /**
  * [핵심 로직] 바코드 처리 함수
@@ -29,7 +31,7 @@ async function handleScannedCode(barcode) {
 
             console.log(`✅ [성공] 상품 인식: ${product.name}, 주류 여부: ${product.isAlcohol}`);
             
-            addToCart(product);
+            addToCart({ ...product, barcode });
 
             // 주류 안내 메시지 렌더 (새로 추가된 함수 호출)
             renderAlcoholNotice(product, barcode);
@@ -59,6 +61,18 @@ async function handleScannedCode(barcode) {
  * [데이터 관리] 장바구니 배열에 상품 추가
  */
 function addToCart(productToAdd) {
+    // 중복 감지: 같은 바코드가 아주 짧은 시간 내(800ms)에 들어오면 무시
+    try {
+        const now = Date.now();
+        const last = recentAdds[productToAdd.barcode] || 0;
+        if (now - last < 800) {
+            console.warn('중복 추가 감지 - 무시:', productToAdd.barcode);
+            return;
+        }
+        recentAdds[productToAdd.barcode] = now;
+    } catch (e) {
+        // 안전성: productToAdd.barcode가 없으면 그냥 진행
+    }
     const existingItem = cartList.find(item => item.barcode === productToAdd.barcode);
 
     if (existingItem) {
@@ -90,6 +104,10 @@ function updateQuantity(barcode, change) {
  * [UI 렌더링] 장바구니 화면을 배열 데이터에 맞춰 다시 그리는 함수
  */
 function updateCartUI() {
+    if (!cartListArea) {
+        console.error('cartListArea element not found (.item.list)');
+        return;
+    }
     cartListArea.innerHTML = '';
 
     let totalPrice = 0;
@@ -116,7 +134,7 @@ function updateCartUI() {
                 </div>
             </div>
         `;
-        // 생성 HTML 목록 영역에 추가
+        // 생성 HTML 목록 영역에 추가 (항목은 추가된 순서대로 아래로 쌓이도록 'beforeend' 사용)
         cartListArea.insertAdjacentHTML('beforeend', itemHTML);
     });
 
@@ -124,7 +142,8 @@ function updateCartUI() {
         totalAmountElement.innerText = `₩${totalPrice.toLocaleString()}`;
     }
 
-    cartListArea.scrollTop = cartListArea.scrollHeight;
+    // 새로 추가된 항목이 맨 위에 오므로 스크롤을 맨 위로 이동
+    cartListArea.scrollTop = 0;
 }
 
 // 주류 안내 메시지 렌더링 함수
@@ -193,7 +212,7 @@ function startScanner() {
                 target: cameraArea,
             },
             decoder: {
-                readers: ['code_128_reader', 'ean_reader', 'ean_8_reader', 'code_39_reader', 'code_39_vin_reader', 'codabar_reader', 'upc_reader', 'upc_e_reader', 'i2of5_reader'],
+                readers: ['ean_reader', 'code_128_reader', 'ean_8_reader', 'code_39_reader', 'code_39_vin_reader', 'codabar_reader', 'upc_reader', 'upc_e_reader', 'i2of5_reader'],
             },
             locate: true,
             frequency: 10
@@ -218,11 +237,23 @@ function startScanner() {
     );
     
     let isScanning = false;
+    // 마지막으로 감지된 코드와 시간 (같은 코드를 짧은 시간 내 중복 처리 방지)
+    let lastDetectedCode = null;
+    let lastDetectedAt = 0;
 
     Quagga.onDetected((data) => {
-        if (isScanning) return; // 중복 스캔 방지
-
         const code = data.codeResult.code;
+        const now = Date.now();
+
+        // 동일 코드가 짧은 시간(2500ms) 내에 다시 들어오면 무시
+        if (code === lastDetectedCode && (now - lastDetectedAt) < 2500) {
+            // console.debug('Quagga: duplicate detection suppressed', code);
+            return;
+        }
+        lastDetectedCode = code;
+        lastDetectedAt = now;
+
+        if (isScanning) return; // 중복 스캔 방지
 
         console.log("Barcode detected: ", code);
 
@@ -232,7 +263,7 @@ function startScanner() {
             setTimeout(() => {
                 isScanning = false;
                 if (statusMessage) statusMessage.innerText = "상태: 대기 중 (스캔 가능)";
-            }, 1500)
+            }, 2500)
         });
     });
 }

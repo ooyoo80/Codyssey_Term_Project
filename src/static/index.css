@@ -69,8 +69,9 @@ html, body {
 .item.list {
 	background-color: #cce7ff;
 	align-items: flex-start;
+	justify-content: flex-start; /* 세로 방향에서 맨 위 정렬 */
 	flex-direction: column;
-	padding: 0;
+	padding: 18px 12px 12px 12px; /* 상단 여백을 늘려 카드가 너무 위에 붙지 않도록 조정 */
 }
 
 .item-card {
