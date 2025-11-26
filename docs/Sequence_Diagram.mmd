@@ -1,35 +1,56 @@
 sequenceDiagram
+    autonumber
     actor User as 사용자 (User)
-    participant Front as 키오스크 화면 (FE)
-    participant Server as API 서버 (BE)
-    participant DB as 데이터베이스 (DB)
+    participant FE as 키오스크 FE (Browser)
+    participant BE as API 서버 (FastAPI)
+    participant DB as 데이터베이스 (JSON Files)
 
-    Note over User, Front: [A 단계] 대기 및 스캔
-    User->>Front: 1. 상품 바코드 스캔
-    Front->>Server: GET /scan/{barcode}
-    Server->>DB: SELECT * FROM Products
-    DB-->>Server: {name: "맥주", is_alcohol: true}
-    Server-->>Front: Response (is_alcohol: true)
+    Note over User, DB: [A 단계] 대기 및 상품 스캔
+    User->>FE: 1. 상품 바코드 스캔 (웹캠)
+    activate FE
+    FE->>BE: 2. GET /product/{barcode} (상품 정보 요청)
+    activate BE
+    BE->>DB: 3. products.json 조회
+    DB-->>BE: 4. 상품 데이터 반환
+    BE-->>FE: 5. JSON 응답 {name, price, is_alcohol...}
+    deactivate BE
+    FE->>FE: 6. 장바구니 추가 (주류 시 '🔞' 표시)
+    deactivate FE
 
-    Note over Front, Front: [B 단계] 상품 판별 로직
-    alt 일반 상품 (False)
-        Front->>Front: 장바구니 즉시 추가
-    else 주류 상품 (True)
-        Front->>Front: 장바구니 추가 보류 (임시저장)
-        
-        Note over User, Front: [C 단계] 1차 관문 (성인 확인)
-        Front->>User: 팝업 1 "19세 이상입니까?"
-        User->>Front: 클릭 [Yes]
-        
-        Note over User, Front: [D 단계] 2차 관문 (책임 동의)
-        Front->>User: 팝업 2 "법적 책임 동의합니까?"
-        User->>Front: 클릭 [동의합니다]
+    Note over User, FE: [B 단계] 결제 시도 및 주류 판별
+    User->>FE: 7. '결제하기' 버튼 클릭
+    activate FE
+    FE->>FE: 8. 장바구니 내 주류 포함 여부 확인
 
-        Note over Front, DB: [D 단계] 로그 저장 및 완료
-        Front->>Server: POST /log (Timestamp + Consent)
-        Server->>DB: INSERT INTO Logs
-        DB-->>Server: Saved
-        Server-->>Front: 200 OK
-        Front->>User: 토스트 메시지 "인증 완료"
-        Front->>Front: 장바구니에 상품 최종 추가
+    alt 주류 미포함 (General Item)
+        FE->>FE: 바로 [E 단계] 최종 결제 팝업으로 이동
+    else 주류 포함 (Alcohol Item)
+        Note over User, FE: [C 단계] 1차/2차 책임 동의 프로세스
+        FE->>User: 9. [1차 팝업] 성인 여부 확인 ("19세 이상입니까?")
+        User->>FE: 10. '예' 클릭
+        FE->>User: 11. [2차 팝업] 법적 책임 동의 ("책임을 지겠습니까?")
+        User->>FE: 12. '예(동의)' 클릭
+
+        Note over User, FE: [D 단계] 3차 신분증 인식 시뮬레이션 (MVP)
+        FE->>User: 13. [3차 화면] 신분증 스캔 안내 및 테스트 버튼 표시
+        User->>FE: 14. '[테스트] 신분증 인식 성공' 버튼 클릭 (시뮬레이션)
     end
+    
+    Note over User, FE: [E 단계] 최종 결제 확인
+    FE->>User: 15. [최종 팝업] 결제 상품 및 총액 확인
+    User->>FE: 16. '결제하기' 클릭 (최종 승인)
+
+    Note over FE, DB: [F 단계] 로그 저장 및 완료 처리
+    rect rgb(240, 248, 255)
+    note right of FE: 주류 포함 시에만 실행
+    FE->>BE: 17. POST /log (바코드, 동의사실, 타임스탬프 전송)
+    activate BE
+    BE->>DB: 18. logs.json 에 데이터 추가 (파일 쓰기)
+    DB-->>BE: 19. 저장 완료 확인
+    BE-->>FE: 20. 200 OK (성공 응답)
+    deactivate BE
+    end
+
+    FE->>User: 21. 결제 완료 메시지 표시 및 초기화
+    deactivate FE
+  
