@@ -10,9 +10,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const payButton = document.querySelector('.pay-button');
 
     const ageModal = document.getElementById('ageModal');
-    const legalModal = document.getElementById('legalModal');
     const ageYesBtn = document.getElementById('btn-age-yes');
     const ageNoBtn = document.getElementById('btn-age-no');
+
+    const legalModal = document.getElementById('legalModal');
+    const legalYesBtn = document.getElementById('btn-legal-yes');
+    const legalNoBtn = document.getElementById('btn-legal-no');
 
     let cartList = [];
     // 중복 스캔으로 인한 중복 장바구니 추가를 방지하기 위한 타임스탬프 맵
@@ -263,18 +266,42 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 1차 팝업 버튼 이벤트
-    if (ageYesBtn && ageModal) {
+    if (ageYesBtn && ageModal && legalModal) {
         ageYesBtn.addEventListener('click', () => {
-            console.log("1차 인증 승인 -> 팝업 닫기 (추후 2차 팝업 구현 예정)");
+            console.log("1차 '예' 클릭 -> 1차 닫고, 2차 팝업 열기");
             ageModal.classList.remove('show');
+            legalModal.classList.add('show');
         });
     }
     if (ageNoBtn && ageModal) {
         ageNoBtn.addEventListener('click', () => {
-            console.log("1차 인증 취소: 초기 상태로 복귀");
+            console.log("1차 '아니오' 클릭 -> 팝업 닫기 및 주류 제거");
             ageModal.classList.remove('show');
             console.log("팝업 닫힌 후 클래스:", ageModal.className);
+            // clearAlcoholItems(); 주류 제거 (추후에 결정)
         });
+    }
+
+    if (legalYesBtn && legalModal) {
+        legalYesBtn.addEventListener('click', () => {
+            console.log("2차 '예' 클릭 -> 2차 닫고, 다음 단계(신분증 인식)로 이동 예정");
+            legalModal.classList.remove('show');
+            // TODO: 3차 신분증 인식 웹캠 화면 보여주는 로직 호출
+        });
+        
+    } else {
+        console.warn("⚠️ 2차 '예' 버튼 또는 팝업 요소를 찾을 수 없어 이벤트를 연결하지 못했습니다.");
+    }
+    
+    if (legalNoBtn && legalModal) {
+        legalNoBtn.addEventListener('click', () => {
+            console.log("🖱️ 2차 '아니오' 클릭 -> 팝업 닫기 및 주류 제거");
+            legalModal.classList.remove('show');
+            clearAlcoholItems(); // 주류 제거
+        });
+        console.log("✅ 2차 '아니오' 버튼 이벤트 리스너 연결 완료");
+    } else {
+        console.warn("⚠️ 2차 '아니오' 버튼 또는 팝업 요소를 찾을 수 없어 이벤트를 연결하지 못했습니다.");
     }
 
     // 카메라 스캐너 설정 (Quagga)
