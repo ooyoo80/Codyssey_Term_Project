@@ -115,15 +115,14 @@ document.addEventListener('DOMContentLoaded', () => {
             paneRight.innerHTML = `
                 <div class="item title">구매 목록</div>
                 <div class="item list"></div>
-                <div class="item pay">
-                    <div class="total-pay">
-                        <div class="item-total">
-                            <span class="total-label">총액</span>
-                            <span class="total-amount">₩0</span>
-                        </div>
-                        <div class="action-container">
-                            <button id="btn-pay" class="pay-button">결제하기</button>
-                        </div>
+
+                <div class="total-pay">
+                    <div class="item-total">
+                        <span class="total-label">총액</span>
+                        <span class="total-amount">₩0</span>
+                    </div>
+                    <div class="action-container">
+                        <button id="btn-pay" class="pay-button">결제하기</button>
                     </div>
                 </div>
             `;
@@ -391,30 +390,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const notice = document.createElement('div');
             notice.id = 'alcohol-notice';
-            Object.assign(notice.style, {
-                position: 'fixed',
-                left: '50%',
-                top: '50%',
-                transform: 'translate(-50%, -50%)',
-                padding: '16px 20px',
-                background: '#ffbebeff',
-                border: '1px solid #ff8c8cff',
-                borderRadius: '10px',
-                boxShadow: '0 8px 24px rgba(0,0,0,0.18)',
-                zIndex: 9999,
-                color: '#000000',
-                maxWidth: '420px',
-                width: '90%',
-                fontSize: '15px',
-                lineHeight: '1.4',
-                textAlign: 'left'
-            });
+            
+            notice.className = 'alcohol-notice-popup';
 
             notice.innerHTML = `
-                <div style="font-weight:700;margin-bottom:8px;color:#d80000;">주류 상품 안내</div>
-                <div>이 상품은 주류로 분류됩니다. 청소년에게 판매가 제한되며, 필요 시 신분증 확인이 필요합니다.</div>
-                <div style="text-align:right;margin-top:10px;">
-                    <button id="alcohol-notice-close" style="background:#d80000;color:#fff;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;">확인</button>
+                <div class="alcohol-notice-title">주류 상품 안내</div>
+                <div class="alcohol-notice-body">이 상품은 주류로 분류됩니다. 청소년에게 판매가 제한되며, 필요 시 신분증 확인이 필요합니다.</div>
+                <div class="alcohol-notice-footer">
+                    <button id="alcohol-notice-close" class="alcohol-notice-btn">확인</button>
                 </div>
             `;
 
