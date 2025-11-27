@@ -395,3 +395,31 @@ html, body {
     font-size: 14px;
     color: #999;
 }
+
+/* 토스트 알림 스타일 */
+#app-toast-message {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 24px;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    z-index: 10000;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+#app-toast-message.show {
+    opacity: 1;
+}
+
+/* 토스트 타입별 배경색 */
+.toast-success { background-color: #4CAF50; } /* 초록색 */
+.toast-warning { background-color: #ff9800; } /* 주황색 */
+.toast-error { background-color: #f44336; }   /* 빨간색 */
+.toast-info { background-color: #333; }       /* 회색 */
