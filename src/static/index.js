@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     let isScanningIdMode = false;
+    let scannedIdValue = null;
 
     const API_URL = "http://127.0.0.1:8001";
 
@@ -34,24 +35,61 @@ document.addEventListener('DOMContentLoaded', () => {
             if (action === 'decrease') updateQuantity(barcode, -1);
         });
     }
-    // 신분증(바코드) 스캔 처리 함수
-    // TODO: 실제 신분증 인식 로직 구현
-    async function handleScannedID(barcode) {
-        console.log(`🆔 [ID 스캔] 인식된 신분증 코드: ${barcode}`)
-        if (statusMessage) statusMessage.innerText = "상태: 신분증 인식 중...";
+    
+    // 유틸리티 함수: 토스트 알림 표시
+    function showToast(message, type = "info", duration = 3000) {
+        let toast = document.getElementById('app-toast-message');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'app-toast-message';
+            document.body.appendChild(toast);
+        }
 
-        // TODO: 신분증 인식 및 다음 단계로 넘어가는 로직 구현 예정
-        // 임시로 2초 후에 완료되었다 가정
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        if (statusMessage) statusMessage.innerText = "상태: 신분증 인식 완료.";
-        console.log("✅ [ID 스캔] 신분증 인식 완료. (시뮬레이션)");
+        toast.className = `toast-${type}`;
+        toast.innerText = message;
+
+        setTimeout(() => {
+            toast.classList.add('show');
+        }, 10);
+
+        clearTimeout(toast.timer);
+        toast.timer = setTimeout(() => {
+            toast.classList.remove('show');
+        }, duration);
     }
 
-    /**
-     * [핵심 로직] 바코드 처리 함수
-     * - 버튼을 누르면 이 함수가 실행됩니다.
-     * - 나중에 카메라가 완성되면, 카메라가 이 함수를 호출하게만 연결하면 끝입니다.
-     */
+
+    async function handleScannedID(barcode) {
+        console.log(`🆔 [ID 스캔 성공] 인식된 코드: ${barcode}`);
+        
+        scannedIdValue = barcode;
+        console.log("💾 신분증 데이터 임시 저장 완료:", scannedIdValue);
+
+        if (statusMessage) statusMessage.innerText = "상태: 신분증 인식 완료";
+
+        showToast("신분증 인식이 완료되었습니다.", "success");
+        
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        isScanningIdMode = false;
+        console.log("🔄 스캔 모드 복귀: 상품 스캔 모드");
+
+        showFinalPaymentModal();
+    }
+
+
+    // 최종 결제 팝업 표시 함수 (Placeholder)
+    function showFinalPaymentModal() {
+        console.log("🚀 [TODO] 이곳에 최종 결제 확인 팝업을 띄우는 코드를 작성해야 합니다.");
+        console.log("현재 저장된 ID 값:", scannedIdValue);
+        console.log("현재 장바구니:", cartList);
+        
+        // 임시 알림
+        showToast("최종 결제 단계로 넘어갑니다. (팝업 미구현)", "warning");
+        if (statusMessage) statusMessage.innerText = "상태: 최종 결제 대기 중";
+    }
+
+    // 바코드 처리 함수
     async function handleScannedCode(barcode) {
         console.log(`📡 [요청] 서버에 바코드 조회: ${barcode}`);
 
