@@ -35,26 +35,123 @@
 
         <!-- Age Verification Modal -->
         <div id="ageModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <p>성인입니까?</p>
+            <div class="modal-content" style="
+                background-color: #ffffff; /* 흰색 배경 */
+                border: 4px solid #ff0000; /* 빨간색 테두리 */
+                border-radius: 15px;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+                padding: 30px 40px;
+                min-width: 550px;
+                text-align: center;
+                font-family: system-ui, -apple-system, sans-serif;
+            ">
+                <div class="modal-body" style="padding: 0;">
+                    <div style="font-size: 2.0em; font-weight:800; margin-bottom:25px; color:#EB4924;">주류 구매 안내</div>
+                    <div style="font-size: 1.4em; font-weight:600; line-height: 1.6; margin-bottom: 30px; color: #333;">
+                        결제하려는 목록에 주류가 포함되어 있습니다.<br>
+                        만 19세 미만은 구매할 수 없습니다.<br>
+                        만 19세 이상이십니까?
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button id="btn-age-yes" class="modal-btn yes-btn">예</button>
-                    <button id="btn-age-no" class="modal-btn no-btn">아니오</button>
+                <div class="modal-footer" style="background: transparent; border: none; padding: 0; gap: 80px; justify-content: center;">
+                    <button id="btn-age-yes" class="modal-btn yes-btn" style="
+                        background:#EB4924; 
+                        color:#fff; 
+                        border:none; 
+                        width: 140px;
+                        height: 60px;
+                        font-size: 1.4em; 
+                        font-weight: bold; 
+                        border-radius: 8px; 
+                        cursor:pointer;
+                        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                    ">예</button>
+                    <button id="btn-age-no" class="modal-btn no-btn" style="
+                        background:#EB4924; 
+                        color:#fff; 
+                        border:none; 
+                        width: 140px;
+                        height: 60px;
+                        font-size: 1.4em; 
+                        font-weight: bold; 
+                        border-radius: 8px; 
+                        cursor:pointer;
+                        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                    ">아니오</button>
                 </div>
             </div>
         </div>
 
         <!-- Legal Responsibility Modal -->
         <div id="legalModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <p>법적 책임도 지겠습니까?</p>
+            <div class="modal-content" style="
+                background-color: #FFC1C1; /* 연한 분홍색 배경 */
+                border-radius: 15px;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+                padding: 30px 40px;
+                min-width: 550px;
+                text-align: center;
+                font-family: system-ui, -apple-system, sans-serif;
+            ">
+                <div class="modal-body" style="padding: 0;">
+                    <div style="font-size: 2.0em; font-weight:800; margin-bottom:25px; color:#EB4924;">법적 책임 안내</div>
+                    <div style="font-size: 1.4em; font-weight:600; line-height: 1.6; margin-bottom: 30px; color: #333;">
+                        본인은 만 19세 이상이며,<br>
+                        주류를 구매하겠다고 응답하셨습니다.<br>
+                        지금부터 신분증 인증 및 결제에서 모든<br>
+                        법적인 책임은 본인에게 있음을 알립니다.
+                    </div>
                 </div>
-                <div class="modal-footer">
-                    <button id="btn-legal-yes" class="modal-btn yes-btn">예</button>
-                    <button id="btn-legal-no" class="modal-btn no-btn">아니오</button>
+                <div class="modal-footer" style="background: transparent; border: none; padding: 0; gap: 80px; justify-content: center;">
+                    <button id="btn-legal-yes" class="modal-btn yes-btn" style="
+                        background:#EB4924; 
+                        color:#fff; 
+                        border:none; 
+                        width: 140px;
+                        height: 60px;
+                        font-size: 1.4em; 
+                        font-weight: bold; 
+                        border-radius: 8px; 
+                        cursor:pointer;
+                        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                    ">예</button>
+                    <button id="btn-legal-no" class="modal-btn no-btn" style="
+                        background:#EB4924; 
+                        color:#fff; 
+                        border:none; 
+                        width: 140px;
+                        height: 60px;
+                        font-size: 1.4em; 
+                        font-weight: bold; 
+                        border-radius: 8px; 
+                        cursor:pointer;
+                        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                    ">아니오</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Modal -->
+        <div id="finalPaymentModal" class="modal">
+            <div class="modal-content payment-modal-content">
+                <div class="payment-modal-header">
+                    <h2>결제 목록</h2>
+                </div>
+                <div class="payment-modal-body">
+                    <div class="payment-items-container">
+                        <table class="payment-table">
+                            <tbody id="paymentItemsList">
+                                <!-- 동적으로 생성될 항목들 -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="payment-total-info">
+                        총액 : <span id="paymentTotalAmount">₩0</span>
+                    </div>
+                </div>
+                <div class="payment-modal-footer">
+                    <button id="btn-final-yes" class="payment-btn confirm-btn">결제</button>
+                    <button id="btn-final-no" class="payment-btn cancel-btn">취소</button>
                 </div>
             </div>
         </div>
