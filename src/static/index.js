@@ -237,6 +237,41 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function showIdScanScreen() {
+        console.log("🖥️ 화면 전환: 신분증 스캔 모드 진입");
+
+        const paneRight = document.querySelector('.pane.right');
+        if (!paneRight) {
+            console.error("❌ 오류: .pane.right 요소를 찾을 수 없습니다.");
+            return;
+        }
+
+        paneRight.innerHTML = '';
+        const guideHTML = `
+            <div class="id-scan-guide-container">
+                <div class="guide-icon">🆔</div>
+                <h2>신분증 바코드를 스캔해주세요</h2>
+                <p class="guide-text">
+                    성인 인증 및 법적 책임 동의 확인을 위해<br>
+                    신분증 뒷면의 바코드를 카메라에 비춰주세요.
+                </p>
+                <div class="scan-animation">
+                    <div class="scan-line"></div>
+                </div>
+                <p class="sub-text">인식이 완료되면 자동으로 다음 단계로 넘어갑니다.</p>
+            </div>
+        `;
+        paneRight.insertAdjacentHTML('beforeend', guideHTML);
+
+        isScanningIdMode = true;
+        console.log("🔄 상태 변경: isScanningIdMode = true");
+
+        const statusMessage = document.getElementById('status');
+        if (statusMessage) {
+            statusMessage.innerText = "상태: 신분증 스캔 대기 중...";
+        }
+    }
+
     // 결제 버튼 클릭 핸들러 (주류 판단 로직)
     function handlePaymentClick() {
         // 장바구니 비었는지 확인
@@ -299,7 +334,8 @@ document.addEventListener('DOMContentLoaded', () => {
         legalYesBtn.addEventListener('click', () => {
             console.log("2차 '예' 클릭 -> 2차 닫고, 다음 단계(신분증 인식)로 이동 예정");
             legalModal.classList.remove('show');
-            // TODO: 3차 신분증 인식 웹캠 화면 보여주는 로직 호출
+            // 3차 신분증 인식 웹캠 화면 보여주는 로직 호출
+            showIdScanScreen();
         });
         
     } else {
