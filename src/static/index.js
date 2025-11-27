@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    
+    let isScanningIdMode = false;
+
     const API_URL = "http://127.0.0.1:8001";
 
     const resultText = document.getElementById('result-text');
@@ -32,6 +33,18 @@ document.addEventListener('DOMContentLoaded', () => {
             if (action === 'increase') updateQuantity(barcode, 1);
             if (action === 'decrease') updateQuantity(barcode, -1);
         });
+    }
+    // 신분증(바코드) 스캔 처리 함수
+    // TODO: 실제 신분증 인식 로직 구현
+    async function handleScannedID(barcode) {
+        console.log(`🆔 [ID 스캔] 인식된 신분증 코드: ${barcode}`)
+        if (statusMessage) statusMessage.innerText = "상태: 신분증 인식 중...";
+
+        // TODO: 신분증 인식 및 다음 단계로 넘어가는 로직 구현 예정
+        // 임시로 2초 후에 완료되었다 가정
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        if (statusMessage) statusMessage.innerText = "상태: 신분증 인식 완료.";
+        console.log("✅ [ID 스캔] 신분증 인식 완료. (시뮬레이션)");
     }
 
     /**
@@ -361,17 +374,27 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("Barcode detected: ", code);
 
             isScanning = true; // 스캔 처리 시작
-
-            handleScannedCode(code).finally(() => {
+            if (isScanningIdMode) {
+                console.log("ℹ️ 현재 신분증 스캔 모드입니다.");
+                processPromise = handleScannedID(code);
+            } else {
+                console.log("ℹ️ 현재 상품 스캔 모드입니다.");
+                processPromise = handleScannedCode(code);
+            }
+            processPromise.finally(() => {
                 setTimeout(() => {
                     isScanning = false;
-                    if (statusMessage) statusMessage.innerText = "상태: 대기 중 (스캔 가능)";
+                    if (statusMessage) {
+                        // 현재 모드에 따라 적절한 대기 메시지 표시
+                        const modeMessage = isScanningIdMode ? "신분증 스캔" : "상품 스캔";
+                        statusMessage.innerText = `상태: 대기 중 (${modeMessage} 가능)`;
+                    }
                 }, 2500)
+
             });
         });
     }
 
     // 스캐너 시작
     startScanner();
-
 });
