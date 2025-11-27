@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-
+    
     const API_URL = "http://127.0.0.1:8001";
 
     const resultText = document.getElementById('result-text');
