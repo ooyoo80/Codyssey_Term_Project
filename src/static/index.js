@@ -18,6 +18,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const legalModal = document.getElementById('legalModal');
     const legalYesBtn = document.getElementById('btn-legal-yes');
     const legalNoBtn = document.getElementById('btn-legal-no');
+    
+    const finalPaymentModal = document.getElementById('finalPaymentModal');
+    const finalPayBtn = document.getElementById('btn-final-pay');
+    const finalCancelBtn = document.getElementById('btn-final-cancel');
 
     let cartList = [];
     // 중복 스캔으로 인한 중복 장바구니 추가를 방지하기 위한 타임스탬프 맵
@@ -80,13 +84,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 최종 결제 팝업 표시 함수 (Placeholder)
     function showFinalPaymentModal() {
-        console.log("🚀 [TODO] 이곳에 최종 결제 확인 팝업을 띄우는 코드를 작성해야 합니다.");
-        console.log("현재 저장된 ID 값:", scannedIdValue);
-        console.log("현재 장바구니:", cartList);
+        console.log("🚀 최종 결제 확인 팝업을 띄웁니다.");
         
-        // 임시 알림
-        showToast("최종 결제 단계로 넘어갑니다. (팝업 미구현)", "warning");
-        if (statusMessage) statusMessage.innerText = "상태: 최종 결제 대기 중";
+        if (finalPaymentModal) {
+            finalPaymentModal.classList.add('show');
+        } else {
+            console.error("❌ 오류: 최종 결제 팝업 요소(finalPaymentModal)를 찾을 수 없습니다.");
+            showToast("최종 결제 팝업을 띄울 수 없습니다. (HTML 확인 필요)", "error");
+        }
+    }
+
+    // 결제하기 버튼 클릭 시
+    if (finalPayBtn) {
+        finalPayBtn.addEventListener('click', async () => {
+            console.log("💰 최종 '결제하기' 버튼 클릭! -> 서버로 결제 요청 전송 시작");
+
+            // TODO: 실제 서버로 결제 요청 보내는 로직 (API 호출) 구현해야 함
+            showToast("결제 요청을 서버로 전송합니다... (미구현)", "info");
+
+            if (statusMessage) statusMessage.innerText = "상태: 결제 처리 중...";
+            await new Promise(resolve => setTimeout(resolve, 2000)); // 모의 대기
+
+            console.log("✅ 결제 처리 완료 (모의)");
+            if (finalPaymentModal) {
+                finalPaymentModal.classList.remove('show');
+            }
+            showToast("결제가 완료되었습니다! 감사합니다.", "success");
+
+            // 장바구니 비우기, 초기 화면으로 돌아가기 등 후속처리 필요
+        })
+    } else {
+        console.warn("⚠️ 최종 '결제하기' 버튼 요소를 찾을 수 없어 이벤트를 연결하지 못했습니다.");
+    }
+
+    if (finalCancelBtn) {
+        finalCancelBtn.addEventListener('click', () => {
+            console.log("❌ 최종 '결제 취소' 버튼 클릭 -> 팝업 닫기");
+            if (finalPaymentModal) {
+                finalPaymentModal.classList.remove('show');
+            }
+            showToast("결제가 취소되었습니다.", "warning");
+            // 이전 단계로 돌아가는 로직
+        });
     }
 
     // 바코드 처리 함수
