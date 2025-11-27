@@ -21,8 +21,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const legalNoBtn = document.getElementById('btn-legal-no');
     
     const finalPaymentModal = document.getElementById('finalPaymentModal');
-    const finalPayBtn = document.getElementById('btn-final-pay');
-    const finalCancelBtn = document.getElementById('btn-final-cancel');
+
+    const finalPaymentListArea = document.getElementById('paymentItemsList');
+    const finalPaymentTotalAmount = document.getElementById('paymentTotalAmount');
+
+    const finalPayBtn = document.getElementById('btn-final-yes');
+    const finalCancelBtn = document.getElementById('btn-final-no');
 
     let cartList = [];
     // 중복 스캔으로 인한 중복 장바구니 추가를 방지하기 위한 타임스탬프 맵
@@ -85,12 +89,38 @@ document.addEventListener('DOMContentLoaded', () => {
         showFinalPaymentModal();
     }
 
+    // 최종 결제 팝업 UI 업데이트 함수
+    function updateFinalPaymentUI() {
+        if (!finalPaymentListArea || !finalPaymentTotalAmount) {
+            console.error("❌ 오류: 최종 결제 팝업 내부 요소를 찾을 수 없습니다.");
+            return;
+        }
+
+        finalPaymentListArea.innerHTML = ''; // 기존 목록 초기화
+        let totalPrice = 0;
+
+        cartList.forEach(item => {
+            const itemTotalPrice = item.price * item.quantity;
+            totalPrice += itemTotalPrice;
+
+            const rowHTML = `
+                <tr>
+                    <td class="col-name-qty">${item.name} x ${item.quantity}</td>
+                    <td class="col-price">₩${itemTotalPrice.toLocaleString()}</td>
+                </tr>
+            `;
+            finalPaymentListArea.insertAdjacentHTML('beforeend', rowHTML);
+        });
+
+        finalPaymentTotalAmount.innerText = `₩${totalPrice.toLocaleString()}`;
+    }
 
     // 최종 결제 팝업 표시 함수 (Placeholder)
     function showFinalPaymentModal() {
         console.log("🚀 최종 결제 확인 팝업을 띄웁니다.");
         
         if (finalPaymentModal) {
+            updateFinalPaymentUI();
             finalPaymentModal.classList.add('show');
         } else {
             // 팀원이 아직 HTML에 추가하지 않았을 수도 있으니 경고 로그 출력
@@ -238,7 +268,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 finalPaymentModal.classList.remove('show');
             }
             showToast("결제가 취소되었습니다.", "warning");
-            // 이전 단계로 돌아가는 로직
+            
+            resetUIAfterPayment();
         });
     } else {
         console.warn("⚠️ '최종 결제 취소' 버튼(btn-final-cancel)을 찾을 수 없습니다. (연동 대기 중)");
@@ -405,11 +436,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const closeBtn = document.getElementById('alcohol-notice-close');
             if (closeBtn) closeBtn.addEventListener('click', () => notice.remove());
-
-            // 자동으로 일정 시간 후 닫기 (5초)
-            setTimeout(() => {
-                if (notice.parentNode) notice.remove();
-            }, 5000);
         } catch (e) {
             console.error('renderAlcoholNotice error', e);
         }
