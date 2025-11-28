@@ -153,15 +153,15 @@ Codyssey_Term_Project/
 3. 주류 구매 시 인증 정보가 로그로 저장됩니다
 4. 결제 완료 후 장바구니가 초기화됩니다
 
-## 와이어프레임 및 프로토타입
+## 🎨 와이어프레임 및 프로토타입
 
 ![와이어프레임](docs/Figma_final.png)
 
-## 시퀀스 다이어그램
+## 📊 시퀀스 다이어그램
 
 ![시퀀스 다이어그램](docs/SequenceDiagram_final.png)
 
-## ERD (Entity Relationship Diagram)
+## 🗂️ ERD (Entity Relationship Diagram)
 
 ![ERD](docs/ERDiagram_final.png)
 
@@ -180,6 +180,7 @@ Codyssey_Term_Project/
   * Response: { "status": "success", "message": "Log saved", "log_id": "..." }
 
 자세한 API 문서는 서버 실행 후 `http://localhost:8001/docs`에서 확인할 수 있습니다.
+
 
 ## 🏗 시스템 아키텍처
 
