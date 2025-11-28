@@ -2,7 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let isScanningIdMode = false;
     let scannedIdValue = null;
 
-    const API_URL = "http://127.0.0.1:8001";
+    // API URL: window.API_URL이 설정되어 있으면 사용, 없으면 기본값 사용
+    const API_URL = window.API_URL || "http://127.0.0.1:8001";
 
     const resultText = document.getElementById('result-text');
     const cameraArea = document.getElementById('camera');
@@ -441,6 +442,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // 주류 제거 함수
+    function clearAlcoholItems() {
+        cartList = cartList.filter(item => !item.isAlcohol);
+        updateCartUI();
+    }
+
 
     function showIdScanScreen() {
         console.log("🖥️ 화면 전환: 신분증 스캔 모드 진입");
@@ -634,3 +641,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // 스캐너 시작
     startScanner();
 });
+
