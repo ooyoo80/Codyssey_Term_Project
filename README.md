@@ -210,7 +210,7 @@ Self-Check Kiosk 시스템 구조
 
 코디세이 텀 프로젝트를 진행하는 팀입니다.
 
-| 유채영 | 이시연 |
+| 유채영 | 김김시연 |
 | :---: | :---: |
 | <a href="https://github.com/ooyoo80"><img src="https://github.com/ooyoo80.png" width="100px" alt="유채영"></a> | <a href="https://github.com/si-yeon-12"><img src="https://github.com/si-yeon-12.png" width="100px" alt="이시연"></a> |
 | **Project Lead & Full Stack Dev**<br>프로젝트 총괄 및 기획, FastAPI 백엔드 구축, 프론트엔드 핵심 로직(JS) 구현 | **UI/UX Designer & Frontend Dev**<br>UI/UX 와이어프레임 설계, 웹 표준 퍼블리싱(HTML/CSS) 및 UI 스타일링 전담 |
