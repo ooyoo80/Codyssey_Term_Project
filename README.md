@@ -210,6 +210,72 @@ Self-Check Kiosk 시스템 구조
 
 코디세이 텀 프로젝트를 진행하는 팀입니다.
 
+
+| [유채영] | [이시연] |
+| :---: | :---: |
+| <a href="https://github.com/ooyoo80"><img src="https://github.com/ooyoo80.png" width="100px" alt="유채영# 🎨 와이어프레임 및 프로토타입
+
+![와이어프레임](docs/Figma_final.png)
+
+## 📊 시퀀스 다이어그램
+
+![시퀀스 다이어그램](docs/SequenceDiagram_final.png)
+
+## 🗂️ ERD (Entity Relationship Diagram)
+
+![ERD](docs/ERDiagram_final.png)
+
+
+## 📋 API 문서
+
+### 주요 엔드포인트
+
+#### 상품 조회
+* GET /product/{barcode} - 바코드로 상품 정보 조회
+  * Response: { "status": "success", "data": { "name": "...", "price": ..., "isAlcohol": ... } }
+
+#### 로그 저장
+* POST /log - 주류 구매 인증 로그 저장
+  * Request Body: { "target_barcode": "...", "consent_agreed": true, "scanned_id_info": "..." }
+  * Response: { "status": "success", "message": "Log saved", "log_id": "..." }
+
+자세한 API 문서는 서버 실행 후 `http://localhost:8001/docs`에서 확인할 수 있습니다.
+
+
+## 🏗 시스템 아키텍처
+
+```
+Self-Check Kiosk 시스템 구조
+
+📱 프론트엔드 (Vanilla JS)
+├── 바코드 스캐너 (Quagga2)
+├── 장바구니 관리
+├── 신분증 인증 UI
+└── 결제 확인 UI
+
+⚙️ 백엔드 (FastAPI)
+├── REST API (상품 조회, 로그 저장)
+├── CORS 미들웨어
+└── JSON 파일 기반 데이터 저장
+
+📦 데이터 저장
+├── products.json (상품 정보)
+└── logs.json (주류 구매 인증 로그)
+```
+
+
+## 👥 팀
+
+### 팀 '어른이'
+
+코디세이 텀 프로젝트를 진행하는 팀입니다.
+
+
+| [유채영] | [이시연] |
+| :---: | :---: |
+| <a href="https://github.com/ooyoo80"><img src="https://github.com/ooyoo80.png" width="100px" alt="유채영"></a> | <a href="https://github.com/si-yeon-12"><img src="https://github.com/si-yeon-12.png" width="100px" alt="이시연"></a> |
+| **Project Lead & Full Stack Dev**<br>프로젝트 총괄 및 기획, FastAPI 백엔드 구축, 프론트엔드 핵심 로직(JS) 구현 | **UI/UX Designer & Frontend Dev**<br>UI/UX 와이어프레임 설계, 웹 표준 퍼블리싱(HTML/CSS) 및 UI 스타일링 전담 |
+| [ooyoo80](https://github.com/ooyoo80) | [si-yeon-12](https://github.com/si-yeon-12) |
 ---
 
 ## 📄 라이선스
