@@ -1,6 +1,4 @@
 from fastapi import FastAPI, HTTPException
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 import json
 import os
@@ -17,23 +15,21 @@ origins = [
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_credentials = True,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-app.mount("/static", StaticFiles(directory="static"), name = "static")
-
-PRODUCTS_FILE = 'products.json'
-LOG_FILE_PATH = os.path.join("static", "logs.json")
+PRODUCTS_FILE = os.path.join(os.path.dirname(__file__), 'products.json')
+LOG_FILE_PATH = os.path.join(os.path.dirname(__file__), 'logs.json')
 
 
-class LogRequest(BaseModel) :
+class LogRequest(BaseModel):
     target_barcode: str
     consent_agreed: bool
     scanned_id_info: str
 
-def get_product_from_db(barcode: str) :
+def get_product_from_db(barcode: str):
     '''
     바코드에 부합하는 상품 정보를 return 하는 함수
     '''
@@ -50,10 +46,6 @@ def get_product_from_db(barcode: str) :
 # =======================
 # API 엔드포인트 (기능 구현)
 # =======================    
-
-@app.get("/")
-def read_root():
-    return FileResponse("templates/index.html")
 
 @app.get("/product/{barcode}")
 def scan_product(barcode: str):
@@ -122,3 +114,4 @@ async def save_log(log_data: LogRequest):
     except Exception as e:
         print(f"❌ [로그 저장 실패] 에러: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to save log: {str(e)}")
+
