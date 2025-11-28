@@ -34,8 +34,8 @@
 
 
 ## 💡서비스 사전 기획 문서
-* **[PRD - 요구사항 정의서]**(docs/PRD_v1.pdf)
-* **[기능 명세서]**(docs/Functional_Specification_v1.pdf)
+* **[PRD - 요구사항 정의서](docs/PRD_v1.pdf)**
+* **[기능 명세서](docs/Functional_Specification_v1.pdf)**
 
   
 ## 🛠 기술 스택
