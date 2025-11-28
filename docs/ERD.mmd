@@ -1,20 +1,27 @@
 erDiagram
     %% 엔티티 정의
     PRODUCTS {
-        string barcode PK "바코드 번호 (Key)"
+        string barcode PK "바코드 번호 (Primary Key)"
         string name "상품명"
-        int price "가격"
-        boolean isAlcohol "주류 여부 (True/False)"
+        int price "가격 (원)"
+        boolean isAlcohol "주류 여부 (true: 주류, false: 일반상품)"
     }
 
-    CONSENT_LOGS {
-        string log_id PK "로그 고유번호 (UUID)"
-        string timestamp "동의 시각 (ISO 8601)"
-        string target_barcode FK "구매한 주류 바코드 (LogRequest.target_barcode)"
-        boolean consent_agreed "법적 책임 동의 여부 (LogRequest.consent_agreed)"
-        string scanned_id_info "신분증 정보 (LogRequest.scanned_id_info)"
+    ALCOHOL_PURCHASE_LOGS {
+        string log_id PK "로그 고유 ID (UUID)"
+        string timestamp "구매 시각 (ISO 8601 형식)"
+        string target_barcode FK "구매한 주류 바코드"
+        boolean consent_agreed "법적 책임 동의 여부 (true: 동의)"
+        string scanned_id_info "스캔한 신분증 바코드 정보"
     }
 
-    %% 관계 정의 (비식별 관계)
-    PRODUCTS ||--o{ CONSENT_LOGS : "generates (판매 기록)"
-  
+    %% 관계 정의
+    %% 한 상품은 여러 주류 구매 로그를 생성할 수 있음 (1:N 관계)
+    %% 주류 구매 로그는 반드시 하나의 상품과 연결됨
+    PRODUCTS ||--o{ ALCOHOL_PURCHASE_LOGS : "generates"
+    
+    %% 참고사항
+    %% - PRODUCTS는 products.json 파일에 저장됨 (바코드를 키로 하는 JSON 객체)
+    %% - ALCOHOL_PURCHASE_LOGS는 logs.json 파일에 배열 형태로 저장됨
+    %% - 주류(isAlcohol=true) 상품 구매 시에만 로그가 생성됨
+    %% - 일반 상품 구매 시에는 로그가 생성되지 않음
