@@ -1,11 +1,11 @@
 # Self-Check Kiosk
-> **웹캠을 이용한 바코드 스캔과 미성년자 주류 구매 방지를 위한 성인 인증과 법적 책임 동의 프로세스가 탑재된 기반 셀프 계산대 시스템입니다.**
+> **웹캠을 이용한 바코드 스캔과 미성년자 주류 구매 방지를 위한 성인 인증과 법적 책임 동 프로세스가 탑재된 기반 셀프 계산대 시스템입니다.**
 
 ## 📋 프로젝트 소개
 
 **Self-Check Kiosk**는 주류 판매 시 직원이 겪는 고객과의 실랑이와 막대한 법적 책임 리스크를 해소하는 데 집중합니다. 기존 셀프 계산대는 주류 구매 시 직원의 신분 확인이 필수로 요구되어, 직원은 위조 신분증 식별에 대한 부담, 미성년자 판매 시의 법적 책임 등의 위험을 떠안아야 했고 이 과정에서 고객과의 마찰도 빈번합니다.
 
-본 프로젝트는 증가하는 셀프 계산대 수요 속에서 직원의 어려움을 근본적으로 해결하고자 합니다. 일본의 선진 성인 인증 자동화 시스템을 벤치마킹하여 국내 환경에서의 적용을 시뮬레이션함으로써, 직원의 개입과 법적 리스크를 최소화하고 안전하고 완전한 **비대면 셀프 결제 경험**을 제시합니다.
+본 프로젝트는 증가하는 셀프 계산대 수요 속에서 직원의 어려움을 근본적으로 해결하고자 합니다. 일본의 선진 성인 인증 자동화 시스템을 벤치마킹하여 국내 환경에서의 적용을 시뮬레이션 하는 것을 목표로 하여, 직원의 개입과 법적 리스크를 최소화하고 안전하고 완전한 **비대면 셀프 결제 경험**을 제시합니다.
 
 ## ✨ 주요 기능
 
@@ -151,7 +151,68 @@ Codyssey_Term_Project/
 1. 결제 확인 팝업에서 구매 목록을 확인합니다
 2. "결제" 버튼을 클릭하여 결제를 완료합니다
 3. 주류 구매 시 인증 정보가 로그로 저장됩니다
-4. 결제 완료 후 장바구니가 초기김시연"></a> |
+4. 결제 완료 후 장바구니가 초기화됩니다
+
+## 🎨 와이어프레임 및 프로토타입
+
+![와이어프레임](docs/Figma_final.png)
+
+## 📊 시퀀스 다이어그램
+
+![시퀀스 다이어그램](docs/SequenceDiagram_final.png)
+
+## 🗂️ ERD (Entity Relationship Diagram)
+
+![ERD](docs/ERDiagram_final.png)
+
+
+## 📋 API 문서
+
+### 주요 엔드포인트
+
+#### 상품 조회
+* GET /product/{barcode} - 바코드로 상품 정보 조회
+  * Response: { "status": "success", "data": { "name": "...", "price": ..., "isAlcohol": ... } }
+
+#### 로그 저장
+* POST /log - 주류 구매 인증 로그 저장
+  * Request Body: { "target_barcode": "...", "consent_agreed": true, "scanned_id_info": "..." }
+  * Response: { "status": "success", "message": "Log saved", "log_id": "..." }
+
+자세한 API 문서는 서버 실행 후 `http://localhost:8001/docs`에서 확인할 수 있습니다.
+
+
+## 🏗 시스템 아키텍처
+
+```
+Self-Check Kiosk 시스템 구조
+
+📱 프론트엔드 (Vanilla JS)
+├── 바코드 스캐너 (Quagga2)
+├── 장바구니 관리
+├── 신분증 인증 UI
+└── 결제 확인 UI
+
+⚙️ 백엔드 (FastAPI)
+├── REST API (상품 조회, 로그 저장)
+├── CORS 미들웨어
+└── JSON 파일 기반 데이터 저장
+
+📦 데이터 저장
+├── products.json (상품 정보)
+└── logs.json (주류 구매 인증 로그)
+```
+
+
+## 👥 팀
+
+### 팀 '어른이'
+
+코디세이 텀 프로젝트를 진행하는 팀입니다.
+
+| 유채영 | 김시연 |
+| :---: | :---: |
+| <a href="https://github.com/ooyoo80"><img src="https://github.com/ooyoo80.png" width="100px" alt="유채영"></a> | <a href="https://github.com/si-yeon-12"><img src="https://github.com/si-yeon-12.png" width="100px" alt="김시연"></a> |
 | **Project Lead & Full Stack Dev**<br>프로젝트 총괄 및 기획, FastAPI 백엔드 구축, 프론트엔드 핵심 로직(JS) 구현 | **UI/UX Designer & Frontend Dev**<br>UI/UX 와이어프레임 설계, 웹 표준 퍼블리싱(HTML/CSS) 및 UI 스타일링 전담 |
 | [ooyoo80](https://github.com/ooyoo80) | [si-yeon-12](https://github.com/si-yeon-12) |
 ---
@@ -159,4 +220,5 @@ Codyssey_Term_Project/
 ## 📄 라이선스
 
 이 프로젝트는 코디세이 텀 프로젝트용으로 개발되었습니다.
+
 
